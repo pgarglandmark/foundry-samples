@@ -111,7 +111,9 @@ print("Deleted agent")
 
 # <create_filesearch_agent>
 # Upload file and create vector store
-file = project.agents.files.upload(file_path="product_info_1.md", purpose="agents")  # noqa: F821
+file = project.agents.files.upload(  # noqa: F821
+    file_path="product_info_1.md", purpose="agents"
+)
 vector_store = project.agents.vector_stores.create_and_poll(  # noqa: F821
     file_ids=[file.id], name="my_vectorstore"
 )
@@ -133,7 +135,9 @@ project.agents.messages.create(  # noqa: F821
     role="user",
     content="Hello, what Contoso products do you know?",
 )
-run = project.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)  # noqa: F821
+run = project.agents.runs.create_and_process(  # noqa: F821
+    thread_id=thread.id, agent_id=agent.id
+)
 
 # Handle run status
 if run.status == "failed":
@@ -145,7 +149,9 @@ project.agents.files.delete(file_id=file.id)  # noqa: F821
 project.agents.delete_agent(agent.id)  # noqa: F821
 
 # Print thread messages
-for message in project.agents.messages.list(thread_id=thread.id).text_messages:  # noqa: F821
+for message in project.agents.messages.list(  # noqa: F821
+    thread_id=thread.id
+).text_messages:
     print(message)
 # </create_filesearch_agent>
 
