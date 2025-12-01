@@ -48,7 +48,9 @@ def create_agent_factory():
             raise ValueError("No tools available to create agent")
 
         azure_credential = DefaultAzureCredential()
-        token_provider = get_bearer_token_provider(azure_credential, "https://cognitiveservices.azure.com/.default")
+        token_provider = get_bearer_token_provider(
+            azure_credential, "https://cognitiveservices.azure.com/.default"
+        )
         # Create the Agent Framework agent with the tools
         print("\nCreating Agent Framework agent with tools from factory...")
         agent = AzureOpenAIChatClient(ad_token_provider=token_provider).create_agent(
@@ -90,10 +92,7 @@ async def quickstart():
     adapter = from_agent_framework(
         agent_factory,
         credentials=credential,
-        tools=[
-            {"type": "mcp", "project_connection_id": tool_connection_id}
-
-            ]
+        tools=[{"type": "mcp", "project_connection_id": tool_connection_id}],
     )
 
     print("Adapter created! Agent will be built on every request.")
@@ -112,4 +111,3 @@ async def main():  # pragma: no cover - sample entrypoint
 
 if __name__ == "__main__":
     asyncio.run(main())
- 

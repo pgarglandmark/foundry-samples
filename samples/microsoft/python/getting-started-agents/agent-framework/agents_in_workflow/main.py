@@ -3,12 +3,16 @@
 from agent_framework import ConcurrentBuilder
 from agent_framework.azure import AzureOpenAIChatClient
 from azure.ai.agentserver.agentframework import from_agent_framework
-from azure.identity import DefaultAzureCredential  # pyright: ignore[reportUnknownVariableType]
+from azure.identity import (
+    DefaultAzureCredential,
+)  # pyright: ignore[reportUnknownVariableType]
 
 
 def main():
     # Create agents
-    researcher = AzureOpenAIChatClient(credential=DefaultAzureCredential()).create_agent(
+    researcher = AzureOpenAIChatClient(
+        credential=DefaultAzureCredential()
+    ).create_agent(
         instructions=(
             "You're an expert market and product researcher. "
             "Given a prompt, provide concise, factual insights, opportunities, and risks."

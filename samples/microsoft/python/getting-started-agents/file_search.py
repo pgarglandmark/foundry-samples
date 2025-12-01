@@ -30,16 +30,24 @@ from azure.ai.agents.models import (
 )
 
 # Define the path to the asset file to be uploaded
-asset_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../assets/product_info_1.md"))
+asset_file_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../assets/product_info_1.md")
+)
 
 # Retrieve environment variables for endpoint and model deployment name
-project_endpoint = os.environ["PROJECT_ENDPOINT"]  # Ensure the PROJECT_ENDPOINT environment variable is set
-model_deployment_name = os.environ["MODEL_DEPLOYMENT_NAME"]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
+project_endpoint = os.environ[
+    "PROJECT_ENDPOINT"
+]  # Ensure the PROJECT_ENDPOINT environment variable is set
+model_deployment_name = os.environ[
+    "MODEL_DEPLOYMENT_NAME"
+]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
 
 # Initialize the AIProjectClient with the endpoint and credentials
 project_client = AIProjectClient(
     endpoint=project_endpoint,
-    credential=DefaultAzureCredential(exclude_interactive_browser_credential=False),  # Use Azure Default Credential for authentication
+    credential=DefaultAzureCredential(
+        exclude_interactive_browser_credential=False
+    ),  # Use Azure Default Credential for authentication
     api_version="latest",
 )
 
@@ -48,11 +56,15 @@ with project_client:
     agents_client = project_client.agents
 
     # Upload the file and specify its purpose
-    file = agents_client.files.upload_and_poll(file_path=asset_file_path, purpose=FilePurpose.AGENTS)
+    file = agents_client.files.upload_and_poll(
+        file_path=asset_file_path, purpose=FilePurpose.AGENTS
+    )
     print(f"Uploaded file, file ID: {file.id}")
 
     # Create a vector store using the uploaded file
-    vector_store = agents_client.vector_stores.create_and_poll(file_ids=[file.id], name="my_vectorstore")
+    vector_store = agents_client.vector_stores.create_and_poll(
+        file_ids=[file.id], name="my_vectorstore"
+    )
     print(f"Created vector store, vector store ID: {vector_store.id}")
 
     # Create a file search tool using the vector store
@@ -81,7 +93,9 @@ with project_client:
     print(f"Created message, ID: {message['id']}")
 
     # Create and process a run with the specified thread and agent
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     if run.status == "failed":

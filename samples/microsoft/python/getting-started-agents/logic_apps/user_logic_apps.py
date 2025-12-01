@@ -33,11 +33,15 @@ class AzureLogicAppTool:
         )
 
         if callback.value is None:
-            raise ValueError(f"No callback URL returned for Logic App '{logic_app_name}'.")
+            raise ValueError(
+                f"No callback URL returned for Logic App '{logic_app_name}'."
+            )
 
         self.callback_urls[logic_app_name] = callback.value
 
-    def invoke_logic_app(self, logic_app_name: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+    def invoke_logic_app(
+        self, logic_app_name: str, payload: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """
         Invokes the registered Logic App (by name) with the given JSON payload.
         Returns a dictionary summarizing success/failure.
@@ -51,10 +55,17 @@ class AzureLogicAppTool:
         if response.ok:
             return {"result": f"Successfully invoked {logic_app_name}."}
         else:
-            return {"error": (f"Error invoking {logic_app_name} " f"({response.status_code}): {response.text}")}
+            return {
+                "error": (
+                    f"Error invoking {logic_app_name} "
+                    f"({response.status_code}): {response.text}"
+                )
+            }
 
 
-def create_send_email_function(service: AzureLogicAppTool, logic_app_name: str) -> Callable[[str, str, str], str]:
+def create_send_email_function(
+    service: AzureLogicAppTool, logic_app_name: str
+) -> Callable[[str, str, str], str]:
     """
     Returns a function that sends an email by invoking the specified Logic App in LogicAppService.
     This keeps the LogicAppService instance out of global scope by capturing it in a closure.

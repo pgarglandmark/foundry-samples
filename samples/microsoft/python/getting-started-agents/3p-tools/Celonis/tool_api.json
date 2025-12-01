@@ -14,7 +14,7 @@
   "paths": {
     "/search-data": {
       "post": {
-        "summary": "Searchs for the relevant columns from the knowledge model. This tool will just show you which fields are available to query.",
+        "summary": "Searches for the relevant columns from the knowledge model. This tool will just show you which fields are available to query.",
         "operationId": "endpoint_search_data_post",
         "requestBody": {
           "content": {

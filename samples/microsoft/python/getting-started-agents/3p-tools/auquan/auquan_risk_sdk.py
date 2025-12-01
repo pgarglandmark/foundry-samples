@@ -28,7 +28,11 @@ import os
 import jsonref
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
+from azure.ai.agents.models import (
+    OpenApiTool,
+    OpenApiConnectionAuthDetails,
+    OpenApiConnectionSecurityScheme,
+)
 
 # endpoint should be in the format "https://<your-ai-services-resource-name>.services.ai.azure.com/api/projects/<your-project-name>"
 endpoint = os.environ["PROJECT_ENDPOINT"]
@@ -48,24 +52,26 @@ with AIProjectClient(
         openapi_spec = jsonref.loads(f.read())
 
     # Create Auth object for the OpenApiTool (note that connection or managed identity auth setup requires additional setup in Azure)
-    auth = OpenApiConnectionAuthDetails(security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id))
+    auth = OpenApiConnectionAuthDetails(
+        security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)
+    )
 
     # Initialize the main OpenAPI tool definition for Auquan Risk Analyzer
     openapi_tool = OpenApiTool(
-        name="auquan risk analyser tool", 
-        spec=openapi_spec, 
-        description="retrieve risk analysis for a given company", 
-        auth=auth
+        name="auquan risk analyser tool",
+        spec=openapi_spec,
+        description="retrieve risk analysis for a given company",
+        auth=auth,
     )
 
     # <agent_creation>
     # --- Agent Creation ---
     # Create an agent configured with the combined OpenAPI tool definitions
     agent = project_client.agents.create_agent(
-        model=model, # Specify the model deployment
-        name="auquan-risk-analyser-agent", # Give the agent a name
-        instructions="You are a helpful research agent that conducts risk analysis on companies using data from Auquan.", # Define agent's role
-        tools=openapi_tool.definitions, # Provide the list of tool definitions
+        model=model,  # Specify the model deployment
+        name="auquan-risk-analyser-agent",  # Give the agent a name
+        instructions="You are a helpful research agent that conducts risk analysis on companies using data from Auquan.",  # Define agent's role
+        tools=openapi_tool.definitions,  # Provide the list of tool definitions
     )
     print(f"Created agent, ID: {agent.id}")
     # </agent_creation>
@@ -90,7 +96,9 @@ with AIProjectClient(
     # --- Message Processing (Run Creation and Auto-processing) ---
     # Create and automatically process the run, handling tool calls internally
     # Note: This differs from the function_tool example where tool calls are handled manually
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
     # </message_processing>
 
@@ -119,7 +127,7 @@ with AIProjectClient(
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>
@@ -131,5 +139,7 @@ with AIProjectClient(
     # Fetch and log all messages exchanged during the conversation thread
     messages = project_client.agents.messages.list(thread_id=thread.id)
     for message in messages:
-        print(f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}")
+        print(
+            f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}"
+        )
     # </cleanup>

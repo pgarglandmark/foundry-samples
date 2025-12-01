@@ -29,7 +29,11 @@ import os
 import jsonref
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
+from azure.ai.agents.models import (
+    OpenApiTool,
+    OpenApiConnectionAuthDetails,
+    OpenApiConnectionSecurityScheme,
+)
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -53,25 +57,26 @@ with AIProjectClient(
 
     conn_id = project_client.connections.get(connection_name=connection_name).id
     # Create Auth object for the OpenApiTool (note that connection or managed identity auth setup requires additional setup in Azure)
-    auth = OpenApiConnectionAuthDetails(security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id))
-
+    auth = OpenApiConnectionAuthDetails(
+        security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)
+    )
 
     # Initialize the main OpenAPI tool definition for weather
     openapi_tool = OpenApiTool(
-        name="getLegalCounsel", 
-        spec=openapi_spec, 
-        description="LegalFly legal counsel API", 
-        auth=auth
+        name="getLegalCounsel",
+        spec=openapi_spec,
+        description="LegalFly legal counsel API",
+        auth=auth,
     )
 
     # <agent_creation>
     # --- Agent Creation ---
     # Create an agent configured with the combined OpenAPI tool definitions
     agent = project_client.agents.create_agent(
-        model=model, # Specify the model deployment
-        name="my-agent", # Give the agent a name
+        model=model,  # Specify the model deployment
+        name="my-agent",  # Give the agent a name
         instructions="You are a helpful AI legal assistant. Act like a friendly person who possesses a lot of legal knowledge.",
-        tools=openapi_tool.definitions, # Provide the list of tool definitions
+        tools=openapi_tool.definitions,  # Provide the list of tool definitions
     )
     print(f"Created agent, ID: {agent.id}")
     # </agent_creation>
@@ -87,7 +92,7 @@ with AIProjectClient(
         thread_id=thread.id,
         role="user",
         # give an example of a user message that the agent can respond to
-    content="What do I need to start a company in California?",
+        content="What do I need to start a company in California?",
     )
     print(f"Created message, ID: {message.id}")
     # </thread_management>
@@ -96,7 +101,9 @@ with AIProjectClient(
     # --- Message Processing (Run Creation and Auto-processing) ---
     # Create and automatically process the run, handling tool calls internally
     # Note: This differs from the function_tool example where tool calls are handled manually
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
     # </message_processing>
 
@@ -106,7 +113,9 @@ with AIProjectClient(
         print(f"Run failed: {run.last_error}")
 
     # Retrieve the steps taken during the run for analysis
-    run_steps = project_client.agents.runs_steps.list(thread_id=thread.id, run_id=run.id)
+    run_steps = project_client.agents.runs_steps.list(
+        thread_id=thread.id, run_id=run.id
+    )
 
     # Loop through each step to display information
     for step in run_steps.data:
@@ -125,7 +134,7 @@ with AIProjectClient(
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>

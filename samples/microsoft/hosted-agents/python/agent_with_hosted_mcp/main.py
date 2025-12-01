@@ -2,7 +2,9 @@
 
 from agent_framework import HostedMCPTool
 from agent_framework.azure import AzureOpenAIChatClient
-from azure.ai.agentserver.agentframework import from_agent_framework  # pyright: ignore[reportUnknownVariableType]
+from azure.ai.agentserver.agentframework import (
+    from_agent_framework,
+)  # pyright: ignore[reportUnknownVariableType]
 from azure.identity import DefaultAzureCredential
 
 

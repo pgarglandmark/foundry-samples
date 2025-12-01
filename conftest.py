@@ -23,10 +23,7 @@ import pytest
 
 # Root directory that contains all Python samples
 SAMPLE_ROOT = (
-    pathlib.Path(__file__).parent
-    / "doc-samples"
-    / "agents"
-    / "python"
+    pathlib.Path(__file__).parent / "doc-samples" / "agents" / "python"
 ).resolve()
 
 

@@ -8,7 +8,9 @@ from typing import Any
 
 from agent_framework import ChatMessage, Context, ContextProvider, Role
 from agent_framework.azure import AzureOpenAIChatClient
-from azure.ai.agentserver.agentframework import from_agent_framework  # pyright: ignore[reportUnknownVariableType]
+from azure.ai.agentserver.agentframework import (
+    from_agent_framework,
+)  # pyright: ignore[reportUnknownVariableType]
 from azure.identity import DefaultAzureCredential
 
 if sys.version_info >= (3, 12):
@@ -27,7 +29,9 @@ class TextSearchResult:
 class TextSearchContextProvider(ContextProvider):
     """A simple context provider that simulates text search results based on keywords in the user's message."""
 
-    def _get_most_recent_message(self, messages: ChatMessage | MutableSequence[ChatMessage]) -> ChatMessage:
+    def _get_most_recent_message(
+        self, messages: ChatMessage | MutableSequence[ChatMessage]
+    ) -> ChatMessage:
         """Helper method to extract the most recent message from the input."""
         if isinstance(messages, ChatMessage):
             return messages
@@ -36,7 +40,9 @@ class TextSearchContextProvider(ContextProvider):
         raise ValueError("No messages provided")
 
     @override
-    async def invoking(self, messages: ChatMessage | MutableSequence[ChatMessage], **kwargs: Any) -> Context:
+    async def invoking(
+        self, messages: ChatMessage | MutableSequence[ChatMessage], **kwargs: Any
+    ) -> Context:
         message = self._get_most_recent_message(messages)
         query = message.text.lower()
 
@@ -85,7 +91,10 @@ class TextSearchContextProvider(ContextProvider):
         return Context(
             messages=[
                 ChatMessage(
-                    role=Role.USER, text="\n\n".join(json.dumps(result.__dict__, indent=2) for result in results)
+                    role=Role.USER,
+                    text="\n\n".join(
+                        json.dumps(result.__dict__, indent=2) for result in results
+                    ),
                 )
             ]
         )

@@ -2,7 +2,11 @@ import os
 import jsonref
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
+from azure.ai.agents.models import (
+    OpenApiTool,
+    OpenApiConnectionAuthDetails,
+    OpenApiConnectionSecurityScheme,
+)
 
 # endpoint should be in the format "https://<your-ai-services-resource-name>.services.ai.azure.com/api/projects/<your-project-name>"
 endpoint = os.environ["PROJECT_ENDPOINT"]
@@ -21,14 +25,16 @@ with AIProjectClient(
         openapi_spec = jsonref.loads(f.read())
 
     # Create Auth object for the OpenApiTool (note that connection or managed identity auth setup requires additional setup in Azure)
-    auth = OpenApiConnectionAuthDetails(security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id))
+    auth = OpenApiConnectionAuthDetails(
+        security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)
+    )
 
     # Initialize the main OpenAPI tool definition for weather
     openapi_tool = OpenApiTool(
-        name="Trademo_Shipments_And_Tariff", 
-        spec=openapi_spec, 
-        description="Provides latest duties and past shipment and duty data for trade between multiple countries", 
-        auth=auth
+        name="Trademo_Shipments_And_Tariff",
+        spec=openapi_spec,
+        description="Provides latest duties and past shipment and duty data for trade between multiple countries",
+        auth=auth,
     )
 
     # <agent_creation>
@@ -37,8 +43,8 @@ with AIProjectClient(
     agent = project_client.agents.create_agent(
         model=model,
         name="my-agent",
-        instructions="You are a helpful shipment agent. Your job is to retrieve shipments and tariff related data till year 2025 using Trademo_Shipments_And_Tariff tool. Also only show tariff information when explicitly asked to do so by the user.", # Define agent's role
-        tools=openapi_tool.definitions, 
+        instructions="You are a helpful shipment agent. Your job is to retrieve shipments and tariff related data till year 2025 using Trademo_Shipments_And_Tariff tool. Also only show tariff information when explicitly asked to do so by the user.",  # Define agent's role
+        tools=openapi_tool.definitions,
     )
     print(f"Created agent, ID: {agent.id}")
     # </agent_creation>
@@ -54,13 +60,15 @@ with AIProjectClient(
         thread_id=thread.id,
         role="user",
         # give an example of a user message that the agent can respond to
-        content="what is the duty of import for jewllery(HS code =  711319) from India to US?",
+        content="what is the duty of import for jewellery(HS code =  711319) from India to US?",
     )
     print(f"Created message, ID: {message.id}")
     # </thread_management>
 
     # <message_processing>
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
     # </message_processing>
 
@@ -89,7 +97,7 @@ with AIProjectClient(
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>
@@ -101,5 +109,7 @@ with AIProjectClient(
     # Fetch and log all messages exchanged during the conversation thread
     messages = project_client.agents.messages.list(thread_id=thread.id)
     for message in messages:
-        print(f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}")
+        print(
+            f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}"
+        )
     # </cleanup>

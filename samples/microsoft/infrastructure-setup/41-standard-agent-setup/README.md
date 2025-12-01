@@ -25,7 +25,7 @@ For more details on the standard agent setup, see the [standard agent setup conc
     az deployment group create --resource-group <new-rg-name> --template-file main.bicep
 ```
 
-## Use exitsing resources
+## Use existing resources
 
 **Azure Cosmos DB for NoSQL**
 - Your existing Azure Cosmos DB for NoSQL Account used in standard setup must have at least a total throughput limit of at least 3000 RU/s. Both Provisioned Thoughtput and Serverless are supported.

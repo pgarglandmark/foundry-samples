@@ -37,7 +37,6 @@ USAGE:
 
 # <imports>
 import os
-import requests
 from typing import Set
 
 from azure.ai.projects import AIProjectClient
@@ -49,6 +48,7 @@ from user_functions import fetch_current_datetime
 
 # Import AzureLogicAppTool and the function factory from user_logic_apps
 from user_logic_apps import AzureLogicAppTool, create_send_email_function
+
 # </imports>
 
 # <client_initialization>
@@ -117,7 +117,9 @@ with project_client:
 
     # <message_processing>
     # Create and process an agent run in the thread
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     if run.status == "failed":

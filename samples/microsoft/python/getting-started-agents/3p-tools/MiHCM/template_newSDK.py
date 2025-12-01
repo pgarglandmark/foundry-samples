@@ -2,11 +2,13 @@ import os
 import jsonref
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
+from azure.ai.agents.models import (
+    OpenApiTool,
+    OpenApiConnectionAuthDetails,
+    OpenApiConnectionSecurityScheme,
+)
 from dotenv import load_dotenv
 from datetime import datetime
-import requests
-import json
 
 
 """
@@ -41,7 +43,7 @@ load_dotenv()
 # Set the employee code for the user
 employeeCode = 1
 
-#sample requests to test the agent
+# sample requests to test the agent
 
 # sample_requests = [
 #     "What are my leave balances",
@@ -63,7 +65,7 @@ connection_name = os.environ["PROJECT_OPENAPI_CONNECTION_NAME"]
 connection = project_client.connections.get(connection_name=connection_name)
 
 # use with local openapi.json file
-with open('./mihcmExternalAPI.json', 'r') as f:
+with open("./mihcmExternalAPI.json", "r") as f:
     openapi_spec = jsonref.loads(f.read())
 
 # Use with openapi.json file from url
@@ -71,13 +73,20 @@ with open('./mihcmExternalAPI.json', 'r') as f:
 # response.raise_for_status()  # makes sure it raises an error if something goes wrong
 # openapi_spec = jsonref.loads(response.text)
 
-# Create Auth object for the OpenApiTool 
-auth = OpenApiConnectionAuthDetails(security_scheme=OpenApiConnectionSecurityScheme(connection_id=connection.id))
+# Create Auth object for the OpenApiTool
+auth = OpenApiConnectionAuthDetails(
+    security_scheme=OpenApiConnectionSecurityScheme(connection_id=connection.id)
+)
 
 # Initialize agent OpenAPI tool using the read in OpenAPI spec
-openapi = OpenApiTool(name="MiHCM", spec=openapi_spec, description="Lets communicate with MiHCM agent to execute different tasks", auth=auth)
+openapi = OpenApiTool(
+    name="MiHCM",
+    spec=openapi_spec,
+    description="Lets communicate with MiHCM agent to execute different tasks",
+    auth=auth,
+)
 
-#Agent instructions 
+# Agent instructions
 instructions = f"""You are a helpful assistant.
 You MUST NOT include leaveTypeCode in any response or output.
 Today's date is {datetime.now()}.
@@ -99,7 +108,7 @@ with project_client:
         model="gpt-4o-mini",
         name="mi-agent",
         instructions=instructions,
-        tools=openapi.definitions
+        tools=openapi.definitions,
     )
     print(f"Created agent, ID: {agent.id}")
 
@@ -115,7 +124,9 @@ with project_client:
     print(f"Created message, ID: {message.id}")
 
     # Create and process agent run in thread with tools
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     # <tool_execution_loop> # Note: This section now processes completed steps, as create_and_process_run handles execution
@@ -143,7 +154,7 @@ with project_client:
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>
@@ -156,7 +167,9 @@ with project_client:
     messages = project_client.agents.messages.list(thread_id=thread.id)
     # Format and print the messages
     for message in messages:
-      print(f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}")
-    
+        print(
+            f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}"
+        )
+
     # print(f"Messages: {messages}")
     # </cleanup>

@@ -40,17 +40,24 @@ import os
 from typing import Set
 from azure.ai.agents.models import ToolSet, FunctionTool
 from azure.identity import DefaultAzureCredential
-from azure.ai.projects import AIProjectClient  
+from azure.ai.projects import AIProjectClient
 
 # Import user-defined functions and tools
-from user_functions import fetch_current_datetime  # Example user function to fetch current datetime
-from user_logic_apps import AzureLogicAppTool, create_send_email_function  # Logic App utilities
+from user_functions import (
+    fetch_current_datetime,
+)  # Example user function to fetch current datetime
+from user_logic_apps import (
+    AzureLogicAppTool,
+    create_send_email_function,
+)  # Logic App utilities
 
 # [START register_logic_app]
 
 # Create the project client to interact with Azure AI Agents service
 project_client = AIProjectClient(
-    endpoint=os.environ["PROJECT_ENDPOINT"],  # Azure AI Agents endpoint from environment variables
+    endpoint=os.environ[
+        "PROJECT_ENDPOINT"
+    ],  # Azure AI Agents endpoint from environment variables
     credential=DefaultAzureCredential(),  # Use Azure Default Credential for authentication
     api_version="latest",  # Use the latest API version
 )
@@ -65,7 +72,9 @@ trigger_name = "<TRIGGER_NAME>"  # Name of the HTTP trigger in the Logic App
 
 # Create and initialize the AzureLogicAppTool utility
 logic_app_tool = AzureLogicAppTool(subscription_id, resource_group)
-logic_app_tool.register_logic_app(logic_app_name, trigger_name)  # Register the Logic App with the tool
+logic_app_tool.register_logic_app(
+    logic_app_name, trigger_name
+)  # Register the Logic App with the tool
 print(f"Registered logic app '{logic_app_name}' with trigger '{trigger_name}'.")
 
 # Create a specialized function to send emails via the Logic App
@@ -87,7 +96,9 @@ with project_client:
 
     # Create an agent with the specified model, name, instructions, and tools
     agent = project_client.agents.create_agent(
-        model=os.environ["MODEL_DEPLOYMENT_NAME"],  # Model deployment name from environment variables
+        model=os.environ[
+            "MODEL_DEPLOYMENT_NAME"
+        ],  # Model deployment name from environment variables
         name="SendEmailAgent",  # Name of the agent
         instructions="You are a specialized agent for sending emails.",  # Instructions for the agent
         toolset=toolset,  # Attach the ToolSet to the agent
@@ -107,7 +118,9 @@ with project_client:
     print(f"Created message, ID: {message['id']}")
 
     # Create and process a run for the agent to handle the message
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     # Check if the run failed and log the error if applicable

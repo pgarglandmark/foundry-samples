@@ -1,11 +1,18 @@
-import asyncio
 import os
+from typing import Any, TYPE_CHECKING
+
 from agent_framework import ChatAgent, HostedMCPTool
 from agent_framework_azure_ai import AzureAIAgentClient
 from azure.ai.agentserver.agentframework import from_agent_framework
 from azure.identity.aio import DefaultAzureCredential
 
-async def handle_approvals_with_thread(query: str, agent: "AgentProtocol", thread: "AgentThread"):
+if TYPE_CHECKING:
+    from agent_framework import AgentProtocol, AgentThread
+
+
+async def handle_approvals_with_thread(
+    query: str, agent: "AgentProtocol", thread: "AgentThread"
+):
     """Here we let the thread deal with the previous responses, and we just rerun with the approval."""
     from agent_framework import ChatMessage
 
@@ -30,12 +37,12 @@ async def handle_approvals_with_thread(query: str, agent: "AgentProtocol", threa
 
 def get_agent() -> ChatAgent:
     """Create and return a ChatAgent with Bing Grounding search tool."""
-    assert "AZURE_AI_PROJECT_ENDPOINT" in os.environ, (
-        "AZURE_AI_PROJECT_ENDPOINT environment variable must be set."
-    )
-    assert "AZURE_AI_MODEL_DEPLOYMENT_NAME" in os.environ, (
-        "AZURE_AI_MODEL_DEPLOYMENT_NAME environment variable must be set."
-    )
+    assert (
+        "AZURE_AI_PROJECT_ENDPOINT" in os.environ
+    ), "AZURE_AI_PROJECT_ENDPOINT environment variable must be set."
+    assert (
+        "AZURE_AI_MODEL_DEPLOYMENT_NAME" in os.environ
+    ), "AZURE_AI_MODEL_DEPLOYMENT_NAME environment variable must be set."
 
     chat_client = AzureAIAgentClient(
         endpoint=os.environ["AZURE_AI_PROJECT_ENDPOINT"],
@@ -53,11 +60,15 @@ def get_agent() -> ChatAgent:
     )
     return agent
 
+
 async def test_agent():
     agent = get_agent()
     thread = agent.get_new_thread()
-    response = await handle_approvals_with_thread("How do I create an Azure Function in Python?", agent, thread)
+    response = await handle_approvals_with_thread(
+        "How do I create an Azure Function in Python?", agent, thread
+    )
     print("Agent response:", response.text)
+
 
 if __name__ == "__main__":
     # asyncio.run(test_agent())

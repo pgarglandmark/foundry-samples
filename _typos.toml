@@ -1,0 +1,20 @@
+[default]
+extend-ignore-re = [
+  # Ignore SVG files that contain base64 encoded data
+  '.*\.svg$',
+]
+
+[files]
+extend-exclude = [
+  # Exclude CSV data files that contain company names and domain-specific terms
+  "samples/microsoft/data/*.csv",
+]
+
+[default.extend-words]
+# Company and product names
+Quess = "Quess"
+QUESS = "QUESS"
+ACI = "ACI"  # Azure Container Instances is a valid acronym
+NAM = "NAM"
+Equipments = "Equipments"  # May be valid in certain contexts
+ba = "ba"  # Could be part of technical terms or abbreviations

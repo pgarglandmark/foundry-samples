@@ -64,7 +64,7 @@ resource "azurerm_subnet" "subnet_pe" {
   ]
 }
 
-########## Create resoures required to store agent data
+########## Create resources required to store agent data
 ##########
 
 ## Create a storage account for agent data

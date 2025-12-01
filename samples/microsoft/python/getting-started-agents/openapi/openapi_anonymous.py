@@ -42,7 +42,9 @@ with AIProjectClient(
     # <weather_tool_setup>
     # --- Weather OpenAPI Tool Setup ---
     # Load the OpenAPI specification for the weather service from a local JSON file using jsonref to handle references
-    with open(os.path.join(os.path.dirname(__file__), "weather_openapi.json"), "r") as f:
+    with open(
+        os.path.join(os.path.dirname(__file__), "weather_openapi.json"), "r"
+    ) as f:
         openapi_weather = jsonref.loads(f.read())
     # </weather_tool_setup>
 
@@ -57,11 +59,17 @@ with AIProjectClient(
 
     # Initialize the main OpenAPI tool definition for weather
     openapi_tool = OpenApiTool(
-        name="get_weather", spec=openapi_weather, description="Retrieve weather information for a location", auth=auth
+        name="get_weather",
+        spec=openapi_weather,
+        description="Retrieve weather information for a location",
+        auth=auth,
     )
     # Add the countries API definition to the same tool object
     openapi_tool.add_definition(
-        name="get_countries", spec=openapi_countries, description="Retrieve a list of countries", auth=auth
+        name="get_countries",
+        spec=openapi_countries,
+        description="Retrieve a list of countries",
+        auth=auth,
     )
     # </countries_tool_setup>
 
@@ -69,10 +77,10 @@ with AIProjectClient(
     # --- Agent Creation ---
     # Create an agent configured with the combined OpenAPI tool definitions
     agent = project_client.agents.create_agent(
-        model=os.environ["MODEL_DEPLOYMENT_NAME"], # Specify the model deployment
-        name="my-agent", # Give the agent a name
-        instructions="You are a helpful agent", # Define agent's role
-        tools=openapi_tool.definitions, # Provide the list of tool definitions
+        model=os.environ["MODEL_DEPLOYMENT_NAME"],  # Specify the model deployment
+        name="my-agent",  # Give the agent a name
+        instructions="You are a helpful agent",  # Define agent's role
+        tools=openapi_tool.definitions,  # Provide the list of tool definitions
     )
     print(f"Created agent, ID: {agent.id}")
     # </agent_creation>
@@ -96,7 +104,9 @@ with AIProjectClient(
     # --- Message Processing (Run Creation and Auto-processing) ---
     # Create and automatically process the run, handling tool calls internally
     # Note: This differs from the function_tool example where tool calls are handled manually
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
     # </message_processing>
 
@@ -106,7 +116,9 @@ with AIProjectClient(
         print(f"Run failed: {run.last_error}")
 
     # Retrieve the steps taken during the run for analysis
-    run_steps = project_client.agents.runs_steps.list(thread_id=thread.id, run_id=run.id)
+    run_steps = project_client.agents.runs_steps.list(
+        thread_id=thread.id, run_id=run.id
+    )
 
     # Loop through each step to display information
     for step in run_steps.data:
@@ -125,7 +137,7 @@ with AIProjectClient(
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>

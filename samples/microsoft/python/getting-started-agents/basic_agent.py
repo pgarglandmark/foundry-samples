@@ -30,13 +30,19 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 
 # Retrieve endpoint and model deployment name from environment variables
-project_endpoint = os.environ["PROJECT_ENDPOINT"]  # Ensure the PROJECT_ENDPOINT environment variable is set
-model_deployment_name = os.environ["MODEL_DEPLOYMENT_NAME"]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
+project_endpoint = os.environ[
+    "PROJECT_ENDPOINT"
+]  # Ensure the PROJECT_ENDPOINT environment variable is set
+model_deployment_name = os.environ[
+    "MODEL_DEPLOYMENT_NAME"
+]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
 
 # Initialize the AIProjectClient with the endpoint and credentials
 project_client = AIProjectClient(
     endpoint=project_endpoint,
-    credential=DefaultAzureCredential(exclude_interactive_browser_credential=False),  # Use Azure Default Credential for authentication
+    credential=DefaultAzureCredential(
+        exclude_interactive_browser_credential=False
+    ),  # Use Azure Default Credential for authentication
     api_version="latest",
 )
 
