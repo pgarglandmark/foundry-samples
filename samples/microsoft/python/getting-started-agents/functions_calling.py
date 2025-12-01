@@ -21,7 +21,8 @@ USAGE:
        the "Models + endpoints" tab in your Azure AI Foundry project.
 """
 # Import necessary modules
-import os, time
+import os
+import time
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient  # Import AIProjectClient for consistency
 from azure.ai.agents.models import FunctionTool, RequiredFunctionToolCall, SubmitToolOutputsAction, ToolOutput

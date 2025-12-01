@@ -27,7 +27,7 @@ USAGE:
 
 # Import necessary modules
 import os
-from azure.ai.agents.models import AzureFunctionStorageQueue, AzureFunctionTool, MessageRole
+from azure.ai.agents.models import AzureFunctionStorageQueue, AzureFunctionTool
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient  # Import AIProjectClient for consistency
 

@@ -25,8 +25,7 @@ USAGE:
 # Import necessary libraries and modules
 import os
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents import AgentsClient
-from azure.ai.agents.models import MessageRole, BingGroundingTool
+from azure.ai.agents.models import BingGroundingTool
 from azure.ai.projects import AIProjectClient
 
 # Retrieve endpoint, connection ID, and model deployment name from environment variables

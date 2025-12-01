@@ -89,7 +89,7 @@ with agents_client:
         print(f"Saved image file to: {Path.cwd() / file_name}")
 
     for file_path_annotation in messages.file_path_annotations:
-        print(f"File Paths:")
+        print("File Paths:")
         print(f"Type: {file_path_annotation.type}")
         print(f"Text: {file_path_annotation.text}")
         print(f"File ID: {file_path_annotation.file_path.file_id}")

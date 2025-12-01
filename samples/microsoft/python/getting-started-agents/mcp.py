@@ -1,7 +1,6 @@
 import time
 import json
 
-from azure.ai.agents import AgentsClient
 from azure.ai.agents.models import MessageTextContent, ListSortOrder
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
@@ -53,7 +52,7 @@ with project_client:
     for step in run_steps:
         print(f"Run step: {step.id}, status: {step.status}, type: {step.type}")
         if step.type == "tool_calls":
-            print(f"Tool call details:")
+            print("Tool call details:")
             for tool_call in step.step_details.tool_calls:
                 print(json.dumps(tool_call.as_dict(), indent=2))
 

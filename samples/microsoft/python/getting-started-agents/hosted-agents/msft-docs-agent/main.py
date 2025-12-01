@@ -1,4 +1,3 @@
-import asyncio
 import os
 from agent_framework import ChatAgent, HostedMCPTool
 from agent_framework_azure_ai import AzureAIAgentClient
