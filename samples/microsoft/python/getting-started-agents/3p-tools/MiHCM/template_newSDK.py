@@ -5,8 +5,6 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
 from dotenv import load_dotenv
 from datetime import datetime
-import requests
-import json
 
 
 """

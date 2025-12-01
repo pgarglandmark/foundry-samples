@@ -37,7 +37,6 @@ USAGE:
 
 # <imports>
 import os
-import requests
 from typing import Set
 
 from azure.ai.projects import AIProjectClient

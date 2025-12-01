@@ -1,11 +1,11 @@
-import asyncio
 import os
+from typing import Any
 from agent_framework import ChatAgent, HostedMCPTool
 from agent_framework_azure_ai import AzureAIAgentClient
 from azure.ai.agentserver.agentframework import from_agent_framework
 from azure.identity.aio import DefaultAzureCredential
 
-async def handle_approvals_with_thread(query: str, agent: "AgentProtocol", thread: "AgentThread"):
+async def handle_approvals_with_thread(query: str, agent: ChatAgent, thread):
     """Here we let the thread deal with the previous responses, and we just rerun with the approval."""
     from agent_framework import ChatMessage
 

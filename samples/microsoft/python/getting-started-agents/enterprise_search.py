@@ -25,7 +25,6 @@ USAGE:
 
 # Import necessary libraries and modules
 import os
-from azure.ai.agents import AgentsClient
 from azure.ai.agents.models import (
     CodeInterpreterTool,  # Tool for enabling code interpretation capabilities
     MessageAttachment,  # Represents an attachment to a message

@@ -1,8 +1,13 @@
-import os, sys, time, json, argparse, subprocess, requests
+import os
+import sys
+import time
+import json
+import argparse
+import subprocess
+import requests
 from typing import List, Dict, Any, Optional
 from azure.cosmos import CosmosClient, exceptions
 from read_cosmos_data import fetch_data
-from azure.ai.agents.models import AzureFunctionStorageQueue, AzureFunctionTool
 
 # Import AIProjectClient for project endpoint support
 try:
@@ -250,7 +255,7 @@ def get_azure_credential():
             except Exception as e2:
                 print(f"⚠️  Manual Azure CLI credential also failed: {e2}")
                 print("💡 This might be due to Azure CLI version mismatch between host and container")
-                raise Exception(f"All credential methods failed. Host CLI: 2.77.0, Container CLI: 2.78.0. Try: az upgrade")
+                raise Exception("All credential methods failed. Host CLI: 2.77.0, Container CLI: 2.78.0. Try: az upgrade")
     else:
         # On host system, use default credential chain
         print("🖥️  Host environment detected, using default credential chain")
@@ -573,7 +578,7 @@ def get_assistant_from_project(project_endpoint: str, assistant_id: str, subscri
     """Get v1 assistant details from project endpoint using direct API calls (bypassing AIProjectClient SDK bug)."""
     
     # Since direct API calls work and AIProjectClient has issues, use direct REST API
-    print(f"   🌐 Using direct API call to project endpoint (bypassing AIProjectClient SDK)")
+    print("   🌐 Using direct API call to project endpoint (bypassing AIProjectClient SDK)")
     
     # Build the direct API URL
     if not project_endpoint.endswith('/'):
@@ -593,7 +598,7 @@ def get_assistant_from_project(project_endpoint: str, assistant_id: str, subscri
         response = do_api_request("GET", api_url, params=params)
         result = response.json()
         
-        print(f"   ✅ Successfully retrieved assistant via direct API call")
+        print("   ✅ Successfully retrieved assistant via direct API call")
         print(f"   📋 Assistant ID: {result.get('id', 'N/A')}")
         print(f"   📋 Assistant Name: {result.get('name', 'N/A')}")
         
@@ -604,11 +609,11 @@ def get_assistant_from_project(project_endpoint: str, assistant_id: str, subscri
         
         # Fallback to AIProjectClient if available (for debugging)
         if PROJECT_CLIENT_AVAILABLE:
-            print(f"   🔄 Attempting fallback to AIProjectClient...")
+            print("   🔄 Attempting fallback to AIProjectClient...")
             
             # Extract project information from endpoint if not provided
             if not subscription_id or not resource_group_name or not project_name:
-                print(f"   🔍 Some project parameters missing, attempting to extract from endpoint or environment...")
+                print("   🔍 Some project parameters missing, attempting to extract from endpoint or environment...")
                 
                 # Use environment variables as fallbacks
                 subscription_id = subscription_id or os.getenv("AGENTS_SUBSCRIPTION") or "921496dc-987f-410f-bd57-426eb2611356"
@@ -655,7 +660,7 @@ def list_assistants_from_project(project_endpoint: str, subscription_id: Optiona
     """List all v1 assistants from project endpoint using direct API calls (bypassing AIProjectClient SDK bug)."""
     
     # Since direct API calls work and AIProjectClient has issues, use direct REST API
-    print(f"   🌐 Using direct API call to project endpoint (bypassing AIProjectClient SDK)")
+    print("   🌐 Using direct API call to project endpoint (bypassing AIProjectClient SDK)")
     
     # Build the direct API URL
     if not project_endpoint.endswith('/'):
@@ -703,7 +708,7 @@ def list_assistants_from_project(project_endpoint: str, subscription_id: Optiona
         
         # Fallback to AIProjectClient if available (for debugging)
         if PROJECT_CLIENT_AVAILABLE:
-            print(f"   🔄 Attempting fallback to AIProjectClient...")
+            print("   🔄 Attempting fallback to AIProjectClient...")
             
             # Try different AIProjectClient constructor patterns for different versions
             try:
@@ -769,7 +774,7 @@ def create_agent_version_via_api(agent_name: str, agent_version_data: Dict[str, 
         # Production mode: use Azure AI services endpoint format
         base_url = get_production_v2_base_url(production_resource, production_subscription, production_resource)
         url = f"{base_url}/agents/{agent_name}/versions"
-        print(f"🏭 Using PRODUCTION endpoint")
+        print("🏭 Using PRODUCTION endpoint")
     else:
         # Local development mode: use the existing BASE_V2 format
         if BASE_V2 is None:
@@ -778,37 +783,37 @@ def create_agent_version_via_api(agent_name: str, agent_version_data: Dict[str, 
             url = f"{local_base}/agents/{agent_name}/versions"
         else:
             url = f"{BASE_V2}/agents/{agent_name}/versions"
-        print(f"🏠 Using LOCAL development endpoint")
+        print("🏠 Using LOCAL development endpoint")
     
     params = {"api-version": API_VERSION}
     
-    print(f"🌐 Creating agent version via v2 API:")
+    print("🌐 Creating agent version via v2 API:")
     print(f"   URL: {url}")
     print(f"   Agent Name: {agent_name}")
     print(f"   API Version: {API_VERSION}")
     print(f"   Full params: {params}")
     
     # Debug: Show the actual request body
-    print(f"🔍 Request Body Debug:")
+    print("🔍 Request Body Debug:")
     print(f"   Type: {type(agent_version_data)}")
     print(f"   Keys: {list(agent_version_data.keys()) if isinstance(agent_version_data, dict) else 'Not a dict'}")
     if isinstance(agent_version_data, dict):
         import json
-        print(f"   Full JSON payload:")
+        print("   Full JSON payload:")
         print(json.dumps(agent_version_data, indent=2, default=str)[:2000] + "..." if len(str(agent_version_data)) > 2000 else json.dumps(agent_version_data, indent=2, default=str))
     
     try:
         # Make the POST request to create the agent version with appropriate token
         # Use production token from environment if available and production resource is specified
         if production_resource and PRODUCTION_TOKEN:
-            print(f"   🔑 Using production token for authentication")
+            print("   🔑 Using production token for authentication")
             response = do_api_request_with_token("POST", url, PRODUCTION_TOKEN, params=params, json=agent_version_data)
         else:
-            print(f"   🔑 Using standard token for authentication")
+            print("   🔑 Using standard token for authentication")
             response = do_api_request("POST", url, params=params, json=agent_version_data)
         result = response.json()
         
-        print(f"✅ Successfully created agent version via v2 API")
+        print("✅ Successfully created agent version via v2 API")
         print(f"   Response ID: {result.get('id', 'N/A')}")
         
         return result
@@ -819,7 +824,7 @@ def create_agent_version_via_api(agent_name: str, agent_version_data: Dict[str, 
             print(f"🔍 Response Status Code: {e.response.status_code}")
             try:
                 error_response = e.response.json()
-                print(f"🔍 Error Response JSON:")
+                print("🔍 Error Response JSON:")
                 import json
                 print(json.dumps(error_response, indent=2))
             except:
@@ -876,12 +881,12 @@ def prepare_v2_api_payload(v2_agent_data: Dict[str, Any]) -> Dict[str, Any]:
     # Remove None values to keep payload clean
     api_payload = {k: v for k, v in api_payload.items() if v is not None}
     
-    print(f"🔧 Prepared v2 API payload:")
+    print("🔧 Prepared v2 API payload:")
     print(f"   Description: {api_payload.get('description', 'N/A')}")
     print(f"   Metadata keys: {list(api_payload.get('metadata', {}).keys())}")
     print(f"   Definition kind: {api_payload.get('definition', {}).get('kind', 'N/A')}")
     print(f"   Migration info: Original v1 ID = {migration_notes['original_v1_id']}")
-    print(f"   All metadata values converted to strings")
+    print("   All metadata values converted to strings")
     
     return api_payload
 
@@ -938,8 +943,6 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
         v1_tools = []
     
     # Check for unsupported tool types and log warnings
-    assistant_id = v1_assistant.get("id", "unknown")
-    assistant_name = v1_assistant.get("name", "unknown")
     unsupported_tools = []
     
     for tool in v1_tools:
@@ -950,18 +953,18 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
         
         if tool_type == "connected_agent":
             unsupported_tools.append(tool_type)
-            print(f"   ⚠️  WARNING: Your classic agent includes connected agents, which aren't supported in the new experience.")
-            print(f"   ℹ️  These connected agents won't be carried over when you create the new agent.")
-            print(f"   💡 To orchestrate multiple agents, use a workflow instead.")
+            print("   ⚠️  WARNING: Your classic agent includes connected agents, which aren't supported in the new experience.")
+            print("   ℹ️  These connected agents won't be carried over when you create the new agent.")
+            print("   💡 To orchestrate multiple agents, use a workflow instead.")
         elif tool_type == "event_binding":
             unsupported_tools.append(tool_type)
-            print(f"   ⚠️  WARNING: Your classic agent uses 'event_binding' which isn't supported in the new experience.")
-            print(f"   ℹ️  This tool won't be carried over when you create the new agent.")
+            print("   ⚠️  WARNING: Your classic agent uses 'event_binding' which isn't supported in the new experience.")
+            print("   ℹ️  This tool won't be carried over when you create the new agent.")
         elif tool_type == "output_binding":
             unsupported_tools.append(tool_type)
-            print(f"   ⚠️  WARNING: Your classic agent uses 'output_binding' which isn't supported in the new experience.")
-            print(f"   ℹ️  This tool won't be carried over when you create the new agent.")
-            print(f"   💡 Consider using 'capture_structured_outputs' in your new agent instead.")
+            print("   ⚠️  WARNING: Your classic agent uses 'output_binding' which isn't supported in the new experience.")
+            print("   ℹ️  This tool won't be carried over when you create the new agent.")
+            print("   💡 Consider using 'capture_structured_outputs' in your new agent instead.")
     
     if unsupported_tools:
         print(f"   📋 Unsupported tools that will be skipped: {', '.join(unsupported_tools)}")
@@ -1028,7 +1031,7 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
         v1_tool_resources = {}
 
     # DEBUG: Print the actual tools and tool_resources structure
-    print(f"🔧 DEBUG - Tools transformation:")
+    print("🔧 DEBUG - Tools transformation:")
     print(f"   v1_tools: {v1_tools}")
     print(f"   v1_tools type: {type(v1_tools)}")
     print(f"   v1_tool_resources: {v1_tool_resources}")
@@ -1080,13 +1083,13 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
                 else:
                     # If no file_ids, still add container with auto type
                     transformed_tool["container"] = {"type": "auto"}
-                    print(f"     Added container with auto type (no file_ids)")
+                    print("     Added container with auto type (no file_ids)")
             
             # Handle code_interpreter tool without resources
             elif tool_type == "code_interpreter":
                 # If no tool_resources, still add container with auto type
                 transformed_tool["container"] = {"type": "auto"}
-                print(f"     Added container with auto type (no resources)")
+                print("     Added container with auto type (no resources)")
             
             # Handle function tools (no resources typically)
             elif tool_type == "function":
@@ -1243,7 +1246,7 @@ def save_v2_agent_to_cosmos(v2_agent_data: Dict[str, Any], connection_string: st
         "migrated_at": int(time.time())  # Keep our migration timestamp too
     }
     
-    print(f"🔍 Document structure for partition key:")
+    print("🔍 Document structure for partition key:")
     print(f"   - id: {agent_version_doc['id']}")
     print(f"   - object: {agent_version_doc['object']}")
     print(f"   - object type: {type(agent_version_doc['object'])}")
@@ -1277,7 +1280,7 @@ def save_v2_agent_to_cosmos(v2_agent_data: Dict[str, Any], connection_string: st
     
     try:
         # Debug: Print document IDs and partition key values
-        print(f"🔍 Attempting to save documents:")
+        print("🔍 Attempting to save documents:")
         print(f"   - Agent Version ID: {agent_version_doc['id']}")
         print(f"   - Migration ID: {migration_doc['id']}")
         
@@ -1301,7 +1304,7 @@ def save_v2_agent_to_cosmos(v2_agent_data: Dict[str, Any], connection_string: st
     except Exception as e:
         print(f"❌ Failed to save v2 agent to Cosmos DB: {e}")
         print(f"❌ Error type: {type(e)}")
-        print(f"❌ Document that failed:")
+        print("❌ Document that failed:")
         print(f"   Agent Version Doc: {agent_version_doc}")
         print(f"   Migration Doc: {migration_doc}")
         raise
@@ -1329,7 +1332,7 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             print("❌ Failed to install required beta version")
             sys.exit(1)
     if project_connection_string:
-        print(f"🏢 Reading v1 assistants from Project Connection String")
+        print("🏢 Reading v1 assistants from Project Connection String")
         if not PROJECT_CLIENT_AVAILABLE:
             print("❌ Error: azure-ai-projects package is required for project connection string functionality")
             print("Install with: pip install azure-ai-projects==1.0.0b10")
@@ -1591,7 +1594,7 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
                     }
                     ensure_tools_array()
                     v1_assistant["tools"].append(test_imagegen_tool)
-                    print(f"   ✅ Added test image generation tool")
+                    print("   ✅ Added test image generation tool")
                 
                 # Add test computer use tool
                 if hasattr(args, 'add_test_computer') and args.add_test_computer:
@@ -1643,7 +1646,7 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
                     print(f"   ✅ Added test Azure Function tool: {test_azurefunction_tool['name']} (using Azurite at {storage_service_endpoint})")
             
             # Pretty print the full v1 object for inspection
-            print(f"\n📋 Full v1 Assistant Object:")
+            print("\n📋 Full v1 Assistant Object:")
             print("=" * 60)
             import pprint
             pprint.pprint(v1_assistant, indent=2, width=80)
@@ -1664,15 +1667,9 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             
             # Save to target container with proper project_id
             # You can customize this project_id as needed
-            project_id = "e2e-tests-westus2-account@e2e-tests-westus2@AML"  # Match existing data format
             
             # Extract feature flags to pass to save function
-            v1_metadata = v1_assistant.get("metadata", {})
-            assistant_feature_flags = {}
-            if "feature_flags" in v1_metadata:
-                assistant_feature_flags = v1_metadata.get("feature_flags", {})
-            elif "internal_metadata" in v1_assistant and isinstance(v1_assistant["internal_metadata"], dict):
-                assistant_feature_flags = v1_assistant["internal_metadata"].get("feature_flags", {})
+            v1_assistant.get("metadata", {})
             
             # Save the v2 agent via v2 API
             print("🌐 Saving via v2 API...")
@@ -1685,7 +1682,7 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             # Create the agent version via v2 API
             # Production token is provided via environment variable
             if production_resource and not PRODUCTION_TOKEN:
-                print(f"❌ Production resource specified but no PRODUCTION_TOKEN environment variable found. Skipping v2 API save.")
+                print("❌ Production resource specified but no PRODUCTION_TOKEN environment variable found. Skipping v2 API save.")
                 print("💡 Use run-migration-docker-auth.ps1 for automatic dual-token authentication")
                 continue
             
@@ -1708,10 +1705,10 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             traceback.print_exc()
             continue
     
-    print(f"\n🎉 Migration completed!")
+    print("\n🎉 Migration completed!")
     print(f"   Total records processed: {processed_count}/{len(v1_assistants)}")
     if project_connection_string:
-        print(f"   Source: Project Connection String")
+        print("   Source: Project Connection String")
     elif project_endpoint:
         print(f"   Source: Project Endpoint ({project_endpoint})")
     elif use_api:
@@ -1884,7 +1881,7 @@ Examples:
     print("=" * 50)
     
     # Production parameters are required
-    print(f"🏭 Production v2 API Configuration:")
+    print("🏭 Production v2 API Configuration:")
     print(f"   🎯 Resource: {args.production_resource}")
     print(f"   📋 Subscription: {args.production_subscription}")
     print(f"   🔐 Tenant: {args.production_tenant}")
@@ -1906,7 +1903,7 @@ Examples:
         print("🔗 Using COSMOS_CONNECTION_STRING environment variable")
     
     if args.project_connection_string:
-        print(f"🏢 Reading assistants from Project Connection String")
+        print("🏢 Reading assistants from Project Connection String")
     elif args.project_endpoint:
         print(f"🏢 Reading assistants from Project Endpoint: {args.project_endpoint}")
     elif args.use_api:
