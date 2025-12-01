@@ -21,6 +21,7 @@ USAGE:
     MODEL_DEPLOYMENT_NAME - The deployment name of the AI model.
 """
 
+import os
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from a .env file
 
