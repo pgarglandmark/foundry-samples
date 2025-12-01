@@ -943,8 +943,6 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
         v1_tools = []
     
     # Check for unsupported tool types and log warnings
-    v1_assistant.get("id", "unknown")
-    v1_assistant.get("name", "unknown")
     unsupported_tools = []
     
     for tool in v1_tools:
@@ -1671,11 +1669,7 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             # You can customize this project_id as needed
             
             # Extract feature flags to pass to save function
-            v1_metadata = v1_assistant.get("metadata", {})
-            if "feature_flags" in v1_metadata:
-                v1_metadata.get("feature_flags", {})
-            elif "internal_metadata" in v1_assistant and isinstance(v1_assistant["internal_metadata"], dict):
-                v1_assistant["internal_metadata"].get("feature_flags", {})
+            v1_assistant.get("metadata", {})
             
             # Save the v2 agent via v2 API
             print("🌐 Saving via v2 API...")
