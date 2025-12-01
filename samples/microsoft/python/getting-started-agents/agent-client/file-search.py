@@ -29,6 +29,7 @@ from azure.ai.agents.models import (
 )
 from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
+
 load_dotenv()
 
 agents_client = AgentsClient(
@@ -37,13 +38,17 @@ agents_client = AgentsClient(
 )
 
 with agents_client:
-
     # Upload file and create vector store
     # [START upload_file_create_vector_store_and_agent_with_file_search_tool]
-    file = agents_client.files.upload_and_poll(file_path="/workspaces/foundry-samples/scenarios/agents/samples/doc-samples/data/product_info_1.md", purpose=FilePurpose.AGENTS)
+    file = agents_client.files.upload_and_poll(
+        file_path="/workspaces/foundry-samples/scenarios/agents/samples/doc-samples/data/product_info_1.md",
+        purpose=FilePurpose.AGENTS,
+    )
     print(f"Uploaded file, file ID: {file.id}")
 
-    vector_store = agents_client.vector_stores.create_and_poll(file_ids=[file.id], name="my_vectorstore")
+    vector_store = agents_client.vector_stores.create_and_poll(
+        file_ids=[file.id], name="my_vectorstore"
+    )
     print(f"Created vector store, vector store ID: {vector_store.id}")
 
     # Create file search tool with resources followed by creating agent
@@ -66,7 +71,9 @@ with agents_client:
 
     # Create message to thread
     message = agents_client.messages.create(
-        thread_id=thread.id, role="user", content="Hello, what Contoso products do you know?"
+        thread_id=thread.id,
+        role="user",
+        content="Hello, what Contoso products do you know?",
     )
     print(f"Created message, ID: {message.id}")
 

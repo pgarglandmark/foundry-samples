@@ -27,7 +27,7 @@ USAGE:
 
 # Import necessary modules
 import os
-from azure.ai.agents.models import AzureFunctionStorageQueue, AzureFunctionTool, MessageRole
+from azure.ai.agents.models import AzureFunctionStorageQueue, AzureFunctionTool
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient  # Import AIProjectClient for consistency
 
@@ -55,7 +55,10 @@ with project_client:
             "type": "object",
             "properties": {
                 "query": {"type": "string", "description": "The question to ask."},
-                "outputqueueuri": {"type": "string", "description": "The full output queue uri."},
+                "outputqueueuri": {
+                    "type": "string",
+                    "description": "The full output queue uri.",
+                },
             },
         },
         input_queue=AzureFunctionStorageQueue(  # Input queue configuration
@@ -70,7 +73,9 @@ with project_client:
 
     # Create an agent with the Azure Function Tool
     agent = project_client.agents.create_agent(
-        model=os.environ["MODEL_DEPLOYMENT_NAME"],  # Model deployment name from environment variables
+        model=os.environ[
+            "MODEL_DEPLOYMENT_NAME"
+        ],  # Model deployment name from environment variables
         name="azure-function-agent-foo",  # Name of the agent
         instructions=(
             "You are a helpful support agent. Use the provided function any time the prompt contains the string "
@@ -95,7 +100,9 @@ with project_client:
     print(f"Created message, message ID: {message['id']}")
 
     # Create and process a run for the agent to handle the message
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     # Check if the run failed and log the error if applicable

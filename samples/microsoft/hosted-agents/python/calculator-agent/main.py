@@ -79,6 +79,7 @@ tools = [add, multiply, divide]
 tools_by_name = {tool.name: tool for tool in tools}
 llm_with_tools = llm.bind_tools(tools)
 
+
 # Nodes
 def llm_call(state: MessagesState):
     """LLM decides whether to call a tool or not"""
@@ -143,6 +144,7 @@ def build_agent() -> "StateGraph":
 
     # Compile the agent
     return agent_builder.compile()
+
 
 # Build workflow and run agent
 if __name__ == "__main__":

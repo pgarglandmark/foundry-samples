@@ -21,10 +21,17 @@ USAGE:
        the "Models + endpoints" tab in your Azure AI Foundry project.
 """
 # Import necessary modules
-import os, time
+import os
+import time
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient  # Import AIProjectClient for consistency
-from azure.ai.agents.models import FunctionTool, RequiredFunctionToolCall, SubmitToolOutputsAction, ToolOutput
+from azure.ai.agents.models import (
+    FunctionTool,
+    RequiredFunctionToolCall,
+    SubmitToolOutputsAction,
+    ToolOutput,
+)
+from logic_apps.user_functions import user_functions
 
 # Retrieve the project endpoint from environment variables
 project_endpoint = os.environ["PROJECT_ENDPOINT"]
@@ -43,7 +50,9 @@ functions = FunctionTool(functions=user_functions)
 with project_client:
     # Create an agent with custom functions
     agent = project_client.agents.create_agent(
-        model=os.environ["MODEL_DEPLOYMENT_NAME"],  # Model deployment name from environment variables
+        model=os.environ[
+            "MODEL_DEPLOYMENT_NAME"
+        ],  # Model deployment name from environment variables
         name="my-agent",  # Name of the agent
         instructions="You are a helpful agent",  # Instructions for the agent
         tools=functions.definitions,  # Attach the function tool definitions to the agent
@@ -63,7 +72,9 @@ with project_client:
     print(f"Created message, ID: {message['id']}")
 
     # Create and process a run for the agent to handle the message
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Created run, ID: {run.id}")
 
     # Poll the run status until it is completed or requires action
@@ -72,7 +83,9 @@ with project_client:
         run = project_client.agents.runs.get(thread_id=thread.id, run_id=run.id)
 
         # Handle cases where the run requires action
-        if run.status == "requires_action" and isinstance(run.required_action, SubmitToolOutputsAction):
+        if run.status == "requires_action" and isinstance(
+            run.required_action, SubmitToolOutputsAction
+        ):
             tool_calls = run.required_action.submit_tool_outputs.tool_calls
             if not tool_calls:
                 # Cancel the run if no tool calls are provided

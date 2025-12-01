@@ -30,6 +30,7 @@ from azure.ai.agents.models import CodeInterpreterTool
 from azure.ai.agents.models import FilePurpose, MessageRole
 from azure.identity import DefaultAzureCredential
 from pathlib import Path
+
 # </imports>
 
 # <client_initialization>
@@ -40,13 +41,14 @@ with AIProjectClient(
     endpoint=endpoint,
     credential=DefaultAzureCredential(exclude_interactive_browser_credential=False),
 ) as project_client:
-# </client_initialization>
+    # </client_initialization>
 
     # Upload a file and wait for it to be processed
     # [START upload_file_and_create_agent_with_code_interpreter]
     # <file_upload>
     file = project_client.agents.files.files.upload_and_poll(
-        file_path=str(Path(__file__).parent / "nifty_500_quarterly_results.csv"), purpose=FilePurpose.AGENTS
+        file_path=str(Path(__file__).parent / "nifty_500_quarterly_results.csv"),
+        purpose=FilePurpose.AGENTS,
     )
     print(f"Uploaded file, file ID: {file.id}")
     # </file_upload>
@@ -82,7 +84,9 @@ with AIProjectClient(
     # </thread_management>
 
     # <message_processing>
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     if run.status == "failed":
@@ -106,7 +110,7 @@ with AIProjectClient(
         print(f"Saved image file to: {Path.cwd() / file_name}")
 
     for file_path_annotation in messages.file_path_annotations:
-        print(f"File Paths:")
+        print("File Paths:")
         print(f"Type: {file_path_annotation.type}")
         print(f"Text: {file_path_annotation.text}")
         print(f"File ID: {file_path_annotation.file_path.file_id}")

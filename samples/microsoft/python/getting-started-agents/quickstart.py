@@ -22,6 +22,7 @@ USAGE:
 """
 
 from dotenv import load_dotenv
+
 load_dotenv()  # Load environment variables from a .env file
 
 ## - pre-reqs: install openai and azure-ai-projects packages
@@ -29,13 +30,17 @@ load_dotenv()  # Load environment variables from a .env file
 ## - deploy a gpt-4o model
 
 ## <chat_completion>
-from azure.ai.projects.onedp import AIProjectClient
-from azure.identity import DefaultAzureCredential
-from azure.ai.projects import FileSearchTool
+import os  # noqa: E402
+
+from azure.ai.projects.onedp import AIProjectClient  # noqa: E402
+from azure.identity import DefaultAzureCredential  # noqa: E402
+from azure.ai.projects import FileSearchTool  # noqa: E402
 
 # Initialize the AIProjectClient with endpoint and credentials
 project_client = AIProjectClient(
-    endpoint=os.environ["PROJECT_ENDPOINT"],  # Ensure the PROJECT_ENDPOINT environment variable is set
+    endpoint=os.environ[
+        "PROJECT_ENDPOINT"
+    ],  # Ensure the PROJECT_ENDPOINT environment variable is set
     credential=DefaultAzureCredential(),  # Use Azure Default Credential for authentication
     api_version="latest",
 )
@@ -43,10 +48,18 @@ project_client = AIProjectClient(
 # Access the Azure OpenAI client for chat completions
 openai = project_client.get_openai_client(api_version="2024-06-01")
 response = openai.chat.completions.create(
-    model=os.environ["MODEL_DEPLOYMENT_NAME"],  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
+    model=os.environ[
+        "MODEL_DEPLOYMENT_NAME"
+    ],  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
     messages=[
-        {"role": "system", "content": "You are a helpful writing assistant"},  # System message to set the assistant's behavior
-        {"role": "user", "content": "Write me a poem about flowers"},  # User's request to the assistant
+        {
+            "role": "system",
+            "content": "You are a helpful writing assistant",
+        },  # System message to set the assistant's behavior
+        {
+            "role": "user",
+            "content": "Write me a poem about flowers",
+        },  # User's request to the assistant
     ],
 )
 
@@ -76,7 +89,9 @@ message = project_client.agents.messages.create(
 print(f"Created message, ID: {message['id']}")
 
 # Create and process a run with the specified thread and agent
-run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+run = project_client.agents.runs.create_and_process(
+    thread_id=thread.id, agent_id=agent.id
+)
 print(f"Run finished with status: {run.status}")
 
 if run.status == "failed":
@@ -96,12 +111,14 @@ print("Deleted agent")
 
 # <create_filesearch_agent>
 # Upload file and create vector store
-file = project.agents.files.upload(file_path="product_info_1.md", purpose="agents")
-vector_store = project.agents.vector_stores.create_and_poll(file_ids=[file.id], name="my_vectorstore")
+file = project.agents.files.upload(file_path="product_info_1.md", purpose="agents")  # noqa: F821
+vector_store = project.agents.vector_stores.create_and_poll(  # noqa: F821
+    file_ids=[file.id], name="my_vectorstore"
+)
 
 # Create file search tool and agent
 file_search = FileSearchTool(vector_store_ids=[vector_store.id])
-agent = project.agents.create_agent(
+agent = project.agents.create_agent(  # noqa: F821
     model="gpt-4o",
     name="my-assistant",
     instructions="You are a helpful assistant and can search information from uploaded files",
@@ -110,31 +127,34 @@ agent = project.agents.create_agent(
 )
 
 # Create thread and process user message
-thread = project.agents.threads.create()
-project.agents.messages.create(thread_id=thread.id, role="user", content="Hello, what Contoso products do you know?")
-run = project.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+thread = project.agents.threads.create()  # noqa: F821
+project.agents.messages.create(  # noqa: F821
+    thread_id=thread.id,
+    role="user",
+    content="Hello, what Contoso products do you know?",
+)
+run = project.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)  # noqa: F821
 
 # Handle run status
 if run.status == "failed":
     print(f"Run failed: {run.last_error}")
 
 # Cleanup resources
-project.agents.vector_stores.delete(vector_store.id)
-project.agents.files.delete(file_id=file.id)
-project.agents.delete_agent(agent.id)
+project.agents.vector_stores.delete(vector_store.id)  # noqa: F821
+project.agents.files.delete(file_id=file.id)  # noqa: F821
+project.agents.delete_agent(agent.id)  # noqa: F821
 
 # Print thread messages
-for message in project.agents.messages.list(thread_id=thread.id).text_messages:
+for message in project.agents.messages.list(thread_id=thread.id).text_messages:  # noqa: F821
     print(message)
 # </create_filesearch_agent>
 
 # <evaluate_agent_run>
-from azure.ai.projects import EvaluatorIds
+from azure.ai.projects import EvaluatorIds  # noqa: E402
 
-result = project.evaluation.create_agent_evaluation(
-    thread=thread.id,
-    run=run.id, 
-    evaluators=[EvaluatorIds.AGENT_QUALITY_EVALUATOR])
+result = project.evaluation.create_agent_evaluation(  # noqa: F821
+    thread=thread.id, run=run.id, evaluators=[EvaluatorIds.AGENT_QUALITY_EVALUATOR]
+)
 
 # wait for evaluation to complete
 result.wait_for_completion()

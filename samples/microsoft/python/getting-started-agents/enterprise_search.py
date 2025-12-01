@@ -25,7 +25,6 @@ USAGE:
 
 # Import necessary libraries and modules
 import os
-from azure.ai.agents import AgentsClient
 from azure.ai.agents.models import (
     CodeInterpreterTool,  # Tool for enabling code interpretation capabilities
     MessageAttachment,  # Represents an attachment to a message
@@ -33,16 +32,24 @@ from azure.ai.agents.models import (
     VectorStoreDataSourceAssetType,  # Enum for specifying the type of vector store asset
 )
 from azure.identity import DefaultAzureCredential  # For authentication
-from azure.ai.projects import AIProjectClient  # Client to interact with Azure AI Projects
+from azure.ai.projects import (
+    AIProjectClient,
+)  # Client to interact with Azure AI Projects
 
 # Retrieve the endpoint and model deployment name from environment variables
-project_endpoint = os.environ["PROJECT_ENDPOINT"]  # Ensure the PROJECT_ENDPOINT environment variable is set
-model_deployment_name = os.environ["MODEL_DEPLOYMENT_NAME"]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
+project_endpoint = os.environ[
+    "PROJECT_ENDPOINT"
+]  # Ensure the PROJECT_ENDPOINT environment variable is set
+model_deployment_name = os.environ[
+    "MODEL_DEPLOYMENT_NAME"
+]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
 
 # Initialize the AIProjectClient with the endpoint and credentials
 project_client = AIProjectClient(
     endpoint=project_endpoint,
-    credential=DefaultAzureCredential(exclude_interactive_browser_credential=False),  # Use Azure Default Credential for authentication
+    credential=DefaultAzureCredential(
+        exclude_interactive_browser_credential=False
+    ),  # Use Azure Default Credential for authentication
     api_version="latest",
 )
 
@@ -64,8 +71,12 @@ with project_client:
     print(f"Created thread, thread ID: {thread.id}")
 
     # Upload a file and create a message with the CodeInterpreterTool
-    asset_uri = os.environ["AZURE_BLOB_URI"]  # Ensure the AZURE_BLOB_URI environment variable is set
-    ds = VectorStoreDataSource(asset_identifier=asset_uri, asset_type=VectorStoreDataSourceAssetType.URI_ASSET)
+    asset_uri = os.environ[
+        "AZURE_BLOB_URI"
+    ]  # Ensure the AZURE_BLOB_URI environment variable is set
+    ds = VectorStoreDataSource(
+        asset_identifier=asset_uri, asset_type=VectorStoreDataSourceAssetType.URI_ASSET
+    )
     attachment = MessageAttachment(data_source=ds, tools=code_interpreter.definitions)
     message = project_client.agents.messages.create(
         thread_id=thread.id,
@@ -76,7 +87,9 @@ with project_client:
     print(f"Created message, message ID: {message['id']}")
 
     # Create and process a run with the specified thread and agent
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     if run.status == "failed":

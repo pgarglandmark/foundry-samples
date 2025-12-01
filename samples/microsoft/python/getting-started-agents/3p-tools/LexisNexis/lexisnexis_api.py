@@ -35,7 +35,7 @@ from azure.ai.agents.models import (
     OpenApiTool,
 )
 from azure.identity import DefaultAzureCredential
-																											 
+
 
 # Load environment variables
 endpoint = os.environ["PROJECT_ENDPOINT"]
@@ -56,7 +56,7 @@ conn_id = project_client.connections.get(name=connection_name).id
 
 # Set up auth using the connection ID (Connect ID)
 auth = OpenApiConnectionAuthDetails(
-    security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)																					 
+    security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)
 )
 
 # Define OpenAPI tool with spec and auth
@@ -83,11 +83,9 @@ with project_client:
     )
     print(f"Created agent, ID: {agent.id}")
 
-													
     thread = project_client.agents.threads.create()
     print(f"Created thread, ID: {thread.id}")
 
-									   
     message = project_client.agents.messages.create(
         thread_id=thread.id,
         role="user",
@@ -95,7 +93,6 @@ with project_client:
     )
     print(f"Created message, ID: {message.id}")
 
-														 
     run = project_client.agents.runs.create_and_process(
         thread_id=thread.id,
         agent_id=agent.id,

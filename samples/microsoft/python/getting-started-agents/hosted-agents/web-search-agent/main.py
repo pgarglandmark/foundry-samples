@@ -1,22 +1,22 @@
-import asyncio
 import os
 from agent_framework import ChatAgent, HostedWebSearchTool
 from agent_framework_azure_ai import AzureAIAgentClient
 from azure.ai.agentserver.agentframework import from_agent_framework
 from azure.identity.aio import DefaultAzureCredential
 
+
 def get_agent() -> ChatAgent:
     """Create and return a ChatAgent with Bing Grounding search tool."""
-    assert "AZURE_AI_PROJECT_ENDPOINT" in os.environ, (
-        "AZURE_AI_PROJECT_ENDPOINT environment variable must be set."
-    )
-    assert "AZURE_AI_MODEL_DEPLOYMENT_NAME" in os.environ, (
-        "AZURE_AI_MODEL_DEPLOYMENT_NAME environment variable must be set."
-    )
-    assert "BING_GROUNDING_CONNECTION_ID" in os.environ, (
-        "BING_GROUNDING_CONNECTION_ID environment variable must be set to use HostedWebSearchTool."
-    )
-    
+    assert (
+        "AZURE_AI_PROJECT_ENDPOINT" in os.environ
+    ), "AZURE_AI_PROJECT_ENDPOINT environment variable must be set."
+    assert (
+        "AZURE_AI_MODEL_DEPLOYMENT_NAME" in os.environ
+    ), "AZURE_AI_MODEL_DEPLOYMENT_NAME environment variable must be set."
+    assert (
+        "BING_GROUNDING_CONNECTION_ID" in os.environ
+    ), "BING_GROUNDING_CONNECTION_ID environment variable must be set to use HostedWebSearchTool."
+
     chat_client = AzureAIAgentClient(
         endpoint=os.environ["AZURE_AI_PROJECT_ENDPOINT"],
         async_credential=DefaultAzureCredential(),
@@ -42,6 +42,7 @@ def get_agent() -> ChatAgent:
         tools=bing_search_tool,
     )
     return agent
+
 
 if __name__ == "__main__":
     from_agent_framework(get_agent()).run()

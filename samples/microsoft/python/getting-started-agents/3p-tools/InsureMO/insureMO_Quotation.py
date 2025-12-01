@@ -29,7 +29,11 @@ import os
 import jsonref
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
-from azure.ai.agents.models import OpenApiTool, OpenApiConnectionAuthDetails, OpenApiConnectionSecurityScheme
+from azure.ai.agents.models import (
+    OpenApiTool,
+    OpenApiConnectionAuthDetails,
+    OpenApiConnectionSecurityScheme,
+)
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
@@ -53,24 +57,26 @@ with AIProjectClient(
         openapi_spec = jsonref.loads(f.read())
 
     # Create Auth object for the OpenApiTool (note that connection or managed identity auth setup requires additional setup in Azure)
-    auth = OpenApiConnectionAuthDetails(security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id))
+    auth = OpenApiConnectionAuthDetails(
+        security_scheme=OpenApiConnectionSecurityScheme(connection_id=conn_id)
+    )
 
     # Initialize the main OpenAPI tool definition for Insurance Quotation
     openapi_tool = OpenApiTool(
-        name="InsuerMOQuotation", 
-        spec=openapi_spec, 
-        description="generate insurance quotations", 
-        auth=auth
+        name="InsuerMOQuotation",
+        spec=openapi_spec,
+        description="generate insurance quotations",
+        auth=auth,
     )
 
     # <agent_creation>
     # --- Agent Creation ---
     # Create an agent configured with the combined OpenAPI tool definitions
     agent = project_client.agents.create_agent(
-        model=model, # Specify the model deployment
-        name="my-agent", # Give the agent a name
-        instructions="You are a helpful insurance agent, help the user with their insurance quotation.", # Define agent's role
-        tools=openapi_tool.definitions, # Provide the list of tool definitions
+        model=model,  # Specify the model deployment
+        name="my-agent",  # Give the agent a name
+        instructions="You are a helpful insurance agent, help the user with their insurance quotation.",  # Define agent's role
+        tools=openapi_tool.definitions,  # Provide the list of tool definitions
     )
     print(f"Created agent, ID: {agent.id}")
     # </agent_creation>
@@ -82,30 +88,36 @@ with AIProjectClient(
     print(f"Created thread, ID: {thread.id}")
 
     # user input for car insurance quotation
-    user_input_car = "Please get me a car insurance quotation for a policy effective from May 1, 2025 to April 30, 2027 for a 30-year-old driver named John Doe " \
-    "(driver’s license number ABC123456, expiring December 31, 2028). The quotation should include Own Damage Basic, Personal Accident to Owner/Driver, " \
-    "Third-Party Liability, and Third-Party Property Damage coverages. The vehicle is a 2020 Honda Civic EX sedan with a market value of 250,000, petrol fuel, " \
-    "a 2000 cc engine capacity, licensed to carry five passengers, chassis number 1HGCM82633A004352, engine number K20A31122334, and registration number XYZ789"
+    user_input_car = (
+        "Please get me a car insurance quotation for a policy effective from May 1, 2025 to April 30, 2027 for a 30-year-old driver named John Doe "
+        "(driver’s license number ABC123456, expiring December 31, 2028). The quotation should include Own Damage Basic, Personal Accident to Owner/Driver, "
+        "Third-Party Liability, and Third-Party Property Damage coverages. The vehicle is a 2020 Honda Civic EX sedan with a market value of 250,000, petrol fuel, "
+        "a 2000 cc engine capacity, licensed to carry five passengers, chassis number 1HGCM82633A004352, engine number K20A31122334, and registration number XYZ789"
+    )
 
     # user input for home insurance quotation
-    user_input_home = "Please get me a home insurance quotation for a policy effective from May 1, 2025 to May 1, 2026 for a one-year-old, "\
-    "tile-constructed Building Type 1 with a built-up and total area of 2,222 sq ft. The coverages should include alternate accommodation "\
-    "(rental limit ₹50,010), keys and locks replacement, contents in storage, legal liability as owner, and tenants’ legal liability. "\
-    " The total value of specified contents is ₹12,000 and the property is insured for a sum of ₹12,000"
+    user_input_home = (
+        "Please get me a home insurance quotation for a policy effective from May 1, 2025 to May 1, 2026 for a one-year-old, "
+        "tile-constructed Building Type 1 with a built-up and total area of 2,222 sq ft. The coverages should include alternate accommodation "
+        "(rental limit ₹50,010), keys and locks replacement, contents in storage, legal liability as owner, and tenants’ legal liability. "
+        " The total value of specified contents is ₹12,000 and the property is insured for a sum of ₹12,000"
+    )
 
     # user input for travel insurance quotation
-    user_input_travel = "Please get me a travel insurance quotation for a policy effective from April 29, 2025 to May 15, 2026 covering travel to India for 20 people, " \
-    "including a 35-year-old male named John Doe. The trip is scheduled from May 1, 2025 to May 15, 2026. Include trip cancellation cover with a ₹20,000 limit, " \
-    "flight delay cover with a ₹20,000 limit, trip delay cover with a ₹20,000 limit, loss of checked baggage cover up to ₹20,000, delay of checked baggage cover " \
-    "up to ₹20,000, accidental death cover with a ₹20,000 limit, personal liability benefit excess of ₹200, and legal liability cover where applicable. The proposer " \
-    "has not previously declined insurance and has no claims history."
+    user_input_travel = (
+        "Please get me a travel insurance quotation for a policy effective from April 29, 2025 to May 15, 2026 covering travel to India for 20 people, "
+        "including a 35-year-old male named John Doe. The trip is scheduled from May 1, 2025 to May 15, 2026. Include trip cancellation cover with a ₹20,000 limit, "
+        "flight delay cover with a ₹20,000 limit, trip delay cover with a ₹20,000 limit, loss of checked baggage cover up to ₹20,000, delay of checked baggage cover "
+        "up to ₹20,000, accidental death cover with a ₹20,000 limit, personal liability benefit excess of ₹200, and legal liability cover where applicable. The proposer "
+        "has not previously declined insurance and has no claims history."
+    )
 
     # Create the initial user message in the thread
     message = project_client.agents.messages.create(
         thread_id=thread.id,
         role="user",
         # give an example of a user message that the agent can respond to
-        content=user_input_car, # Change this to user_input_home or user_input_travel to test other inputs
+        content=user_input_car,  # Change this to user_input_home or user_input_travel to test other inputs
     )
     print(f"Created message, ID: {message.id}")
     # </thread_management>
@@ -114,7 +126,9 @@ with AIProjectClient(
     # --- Message Processing (Run Creation and Auto-processing) ---
     # Create and automatically process the run, handling tool calls internally
     # Note: This differs from the function_tool example where tool calls are handled manually
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
     # </message_processing>
 
@@ -143,7 +157,7 @@ with AIProjectClient(
                 function_details = call.get("function", {})
                 if function_details:
                     print(f"    Function name: {function_details.get('name')}")
-        print() # Add an extra newline between steps for readability
+        print()  # Add an extra newline between steps for readability
     # </tool_execution_loop>
 
     # <cleanup>
@@ -155,6 +169,8 @@ with AIProjectClient(
     # Fetch and log all messages exchanged during the conversation thread
     messages = project_client.agents.messages.list(thread_id=thread.id)
     for message in messages:
-        print(f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}")
-        
+        print(
+            f"Message ID: {message.id}, Role: {message.role}, Content: {message.content}"
+        )
+
     # </cleanup>

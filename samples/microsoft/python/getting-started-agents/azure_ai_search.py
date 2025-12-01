@@ -26,23 +26,36 @@ USAGE:
 import os
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
-from azure.ai.agents.models import AzureAISearchQueryType, AzureAISearchTool, ListSortOrder, MessageRole
+from azure.ai.agents.models import (
+    AzureAISearchQueryType,
+    AzureAISearchTool,
+    ListSortOrder,
+    MessageRole,
+)
 
 # Retrieve endpoint and model deployment name from environment variables
-project_endpoint = os.environ["PROJECT_ENDPOINT"]  # Ensure the PROJECT_ENDPOINT environment variable is set
-model_deployment_name = os.environ["MODEL_DEPLOYMENT_NAME"]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
+project_endpoint = os.environ[
+    "PROJECT_ENDPOINT"
+]  # Ensure the PROJECT_ENDPOINT environment variable is set
+model_deployment_name = os.environ[
+    "MODEL_DEPLOYMENT_NAME"
+]  # Ensure the MODEL_DEPLOYMENT_NAME environment variable is set
 
 # Initialize the AIProjectClient with the endpoint and credentials
 project_client = AIProjectClient(
     endpoint=project_endpoint,
-    credential=DefaultAzureCredential(exclude_interactive_browser_credential=False),  # Use Azure Default Credential for authentication
+    credential=DefaultAzureCredential(
+        exclude_interactive_browser_credential=False
+    ),  # Use Azure Default Credential for authentication
     api_version="latest",
 )
 
 with project_client:
     # Initialize the Azure AI Search tool with the required parameters
     ai_search = AzureAISearchTool(
-        index_connection_id=os.environ["AZURE_AI_CONNECTION_ID"],  # Connection ID for the Azure AI Search index
+        index_connection_id=os.environ[
+            "AZURE_AI_CONNECTION_ID"
+        ],  # Connection ID for the Azure AI Search index
         index_name="sample_index",  # Name of the search index
         query_type=AzureAISearchQueryType.SIMPLE,  # Query type (e.g., SIMPLE, FULL)
         top_k=3,  # Number of top results to retrieve
@@ -72,7 +85,9 @@ with project_client:
     print(f"Created message, ID: {message['id']}")
 
     # Create and process an agent run in the thread using the tools
-    run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+    run = project_client.agents.runs.create_and_process(
+        thread_id=thread.id, agent_id=agent.id
+    )
     print(f"Run finished with status: {run.status}")
 
     if run.status == "failed":
@@ -80,7 +95,9 @@ with project_client:
         print(f"Run failed: {run.last_error}")
 
     # Fetch and log all messages from the thread
-    messages = project_client.agents.messages.list(thread_id=thread.id, order=ListSortOrder.ASCENDING)
+    messages = project_client.agents.messages.list(
+        thread_id=thread.id, order=ListSortOrder.ASCENDING
+    )
     for message in messages.data:
         print(f"Role: {message.role}, Content: {message.content}")
 
