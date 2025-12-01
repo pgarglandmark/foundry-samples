@@ -943,8 +943,8 @@ def v1_assistant_to_v2_agent(v1_assistant: Dict[str, Any], agent_name: Optional[
         v1_tools = []
     
     # Check for unsupported tool types and log warnings
-    assistant_id = v1_assistant.get("id", "unknown")
-    assistant_name = v1_assistant.get("name", "unknown")
+    v1_assistant.get("id", "unknown")
+    v1_assistant.get("name", "unknown")
     unsupported_tools = []
     
     for tool in v1_tools:
@@ -1669,15 +1669,13 @@ def process_v1_assistants_to_v2_agents(args=None, assistant_id: Optional[str] = 
             
             # Save to target container with proper project_id
             # You can customize this project_id as needed
-            project_id = "e2e-tests-westus2-account@e2e-tests-westus2@AML"  # Match existing data format
             
             # Extract feature flags to pass to save function
             v1_metadata = v1_assistant.get("metadata", {})
-            assistant_feature_flags = {}
             if "feature_flags" in v1_metadata:
-                assistant_feature_flags = v1_metadata.get("feature_flags", {})
+                v1_metadata.get("feature_flags", {})
             elif "internal_metadata" in v1_assistant and isinstance(v1_assistant["internal_metadata"], dict):
-                assistant_feature_flags = v1_assistant["internal_metadata"].get("feature_flags", {})
+                v1_assistant["internal_metadata"].get("feature_flags", {})
             
             # Save the v2 agent via v2 API
             print("🌐 Saving via v2 API...")

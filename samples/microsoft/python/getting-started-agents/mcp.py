@@ -1,10 +1,13 @@
 import time
 import json
+import os
 
 from azure.ai.agents.models import MessageTextContent, ListSortOrder
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 
+PROJECT_ENDPOINT = os.environ.get("PROJECT_ENDPOINT")
+MODEL_DEPLOYMENT_NAME = os.environ.get("MODEL_DEPLOYMENT_NAME")
 
 project_client = AIProjectClient(
     endpoint=PROJECT_ENDPOINT,

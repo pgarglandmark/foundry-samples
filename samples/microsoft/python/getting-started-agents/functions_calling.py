@@ -26,6 +26,7 @@ import time
 from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient  # Import AIProjectClient for consistency
 from azure.ai.agents.models import FunctionTool, RequiredFunctionToolCall, SubmitToolOutputsAction, ToolOutput
+from logic_apps.user_functions import user_functions
 
 # Retrieve the project endpoint from environment variables
 project_endpoint = os.environ["PROJECT_ENDPOINT"]
