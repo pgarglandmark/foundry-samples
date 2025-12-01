@@ -2,7 +2,7 @@
 #
 # Purpose
 # -------
-# Treat every Python sample under  doc-samples/agents/python/**
+# Treat every Python sample under  samples/microsoft/python/**
 # as a Pytest test item.  The script "passes" if it runs without
 # raising an exception (exit code 0).
 #
@@ -24,8 +24,8 @@ import pytest
 # Root directory that contains all Python samples
 SAMPLE_ROOT = (
     pathlib.Path(__file__).parent
-    / "doc-samples"
-    / "agents"
+    / "samples"
+    / "microsoft"
     / "python"
 ).resolve()
 
@@ -43,13 +43,13 @@ def _is_under_sample_root(path_obj: pathlib.Path) -> bool:
         return False
 
 
-def pytest_collect_file(parent, path):
+def pytest_collect_file(parent, file_path):
     """
-    PyTest collection hook: decide whether *path* should become a test item.
-    `path` is a py.path.local object; convert to Path for easier checks.
+    PyTest collection hook: decide whether *file_path* should become a test item.
+    `file_path` is a pathlib.Path object.
     """
-    if path.ext == ".py" and _is_under_sample_root(pathlib.Path(path)):
-        return SampleItem.from_parent(parent, name=path.basename, fspath=path)
+    if file_path.suffix == ".py" and _is_under_sample_root(file_path):
+        return SampleItem.from_parent(parent, name=file_path.name, path=file_path)
 
 
 class SampleItem(pytest.Item):
@@ -60,11 +60,11 @@ class SampleItem(pytest.Item):
 
     def runtest(self):
         # Execute the script in its own namespace.
-        runpy.run_path(str(self.fspath))
+        runpy.run_path(str(self.path))
 
     def repr_failure(self, excinfo):
         # Nicely format any exception raised during runtest().
-        return f"Sample {self.fspath} failed:\n{excinfo.value}"
+        return f"Sample {self.path} failed:\n{excinfo.value}"
 
     def reportinfo(self):
-        return self.fspath, 0, "sample script"
+        return self.path, 0, "sample script"
