@@ -212,7 +212,7 @@
                         "type": "string"
                       },
                       "ranking_data": {
-                        "description": "Describes a POI's Popularity Index ranking on Tripadvisor, which compares places of interest (accomodations, restaurants, and attractions) within the same destination based on their popularity.This is measured by the quality, quantity, and recency of their review content on Tripadvisor.",
+                        "description": "Describes a POI's Popularity Index ranking on Tripadvisor, which compares places of interest (accommodations, restaurants, and attractions) within the same destination based on their popularity.This is measured by the quality, quantity, and recency of their review content on Tripadvisor.",
                         "type": "object",
                         "properties": {
                           "geo_location_id": {
@@ -999,7 +999,7 @@
                               "type": "object",
                               "properties": {
                                 "id": {
-                                  "description": "The Tripadvisor ID for the owner respose.",
+                                  "description": "The Tripadvisor ID for the owner response.",
                                   "type": "integer",
                                   "format": "int32"
                                 },
@@ -1198,7 +1198,7 @@
             {
               "name": "latLong",
               "in": "query",
-              "description": "Latitude/Longitude pair to scope down the search around a specifc point - eg. \"42.3455,-71.10767\"",
+              "description": "Latitude/Longitude pair to scope down the search around a specific point - eg. \"42.3455,-71.10767\"",
               "required": false,
               "schema": {
                 "type": "string"
@@ -1389,7 +1389,7 @@
             {
               "name": "latLong",
               "in": "query",
-              "description": "Latitude/Longitude pair to scope down the search around a specifc point - eg. \"42.3455,-71.10767\"",
+              "description": "Latitude/Longitude pair to scope down the search around a specific point - eg. \"42.3455,-71.10767\"",
               "required": true,
               "schema": {
                 "type": "string"

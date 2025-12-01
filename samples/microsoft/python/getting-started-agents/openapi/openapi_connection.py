@@ -21,7 +21,7 @@ USAGE:
     1) PROJECT_ENDPOINT - the Azure AI Agents endpoint.
     2) MODEL_DEPLOYMENT_NAME - The deployment name of the AI model, as found under the "Name" column in
        the "Models + endpoints" tab in your Azure AI Foundry project.
-    3) CONNECION_ID - the connection ID of your customKeys connection 
+    3) CONNECTION_ID - the connection ID of your customKeys connection 
 """
 # <initialization>
 # Import necessary libraries
@@ -37,7 +37,7 @@ from azure.ai.agents.models import (
 
 endpoint = os.environ["PROJECT_ENDPOINT"]
 model = os.environ["MODEL_DEPLOYMENT_NAME"]
-conn_id = os.environ["CONNECION_ID"]
+conn_id = os.environ["CONNECTION_ID"]
 
 # Initialize the project client using the endpoint and default credentials
 with AIProjectClient(

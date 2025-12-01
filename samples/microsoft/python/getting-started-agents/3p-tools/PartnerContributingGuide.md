@@ -17,7 +17,7 @@ Your PR needs to create a new folder with the tool name and include the followin
   - (recommended) Python: [Azure AI Projects client library for Python | Microsoft Learn](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-projects-readme?view=azure-python-preview#create-agent-with-openapi)
   - .NET/C#: [Azure AI Projects client library for .NET - Azure for .NET Developers | Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/ai.projects-readme?view=azure-dotnet-preview)
   - JavaScript: [Azure AI Projects client library for JavaScript | Microsoft Learn](https://learn.microsoft.com/en-us/javascript/api/overview/azure/ai-projects-readme?view=azure-node-preview)
-  - Requirements fot the code sample:
+  - Requirements for the code sample:
     - you should have tested the code sample works end to end with the OpenAPI spec in this PR before submitting
     - include the process of creating an `openApi` tool with your OpenAPI spec
     - for `agent creation`, provide a user-friendly name and useful instructions customized for your API

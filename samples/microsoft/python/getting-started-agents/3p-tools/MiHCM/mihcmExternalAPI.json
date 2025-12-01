@@ -897,7 +897,7 @@
             "type": "string",
             "nullable": true
           },
-          "attachements": {
+          "attachments": {
             "type": "string",
             "nullable": true
           },

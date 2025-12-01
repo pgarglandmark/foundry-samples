@@ -60,7 +60,7 @@ with AIProjectClient(
         thread_id=thread.id,
         role="user",
         # give an example of a user message that the agent can respond to
-        content="what is the duty of import for jewllery(HS code =  711319) from India to US?",
+        content="what is the duty of import for jewellery(HS code =  711319) from India to US?",
     )
     print(f"Created message, ID: {message.id}")
     # </thread_management>

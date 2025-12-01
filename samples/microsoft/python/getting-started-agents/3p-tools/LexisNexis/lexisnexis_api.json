@@ -333,7 +333,7 @@
           },
           "message": {
             "type": "string",
-            "description": "Error Descrption"
+            "description": "Error Description"
           }
         }
       },
@@ -1135,7 +1135,7 @@
       },
       "LexisNexisGlobalIdentifier": {
         "type": "object",
-        "description": "LNGI Identifier of the company releated to the dockets document.",
+        "description": "LNGI Identifier of the company related to the dockets document.",
         "properties": {
           "Name": {
             "type": "string",

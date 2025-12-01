@@ -19,7 +19,7 @@ Requirement:
 ## Description
 <tool_description>
 
-<tool_descrption> will be used in Azure AI Foundry Portal experience and marketing materials.
+<tool_description> will be used in Azure AI Foundry Portal experience and marketing materials.
   
 Requirement:
 - Ensure your description complies with the [Marketplace guidelines](https://learn.microsoft.com/en-us/legal/marketplace/certification-policies#10013-description). 

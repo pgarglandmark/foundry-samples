@@ -12,7 +12,7 @@ resource "random_string" "unique" {
   upper       = false
 }
 
-########## Create resoures required to for agent data storage
+########## Create resources required to for agent data storage
 ##########
 
 ## Create a storage account for agent data

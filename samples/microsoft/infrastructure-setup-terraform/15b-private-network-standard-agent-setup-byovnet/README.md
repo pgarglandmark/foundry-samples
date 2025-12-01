@@ -94,7 +94,7 @@ Note: The following resources will be created automatically for you:
 ### Variables
 
 The variables listed below [must be provided](https://developer.hashicorp.com/terraform/language/values/variables#variable-definition-precedence) when performing deploying the templates. The file example.tfvars provides a sample Terraform variables file that can be used.
-- **resource_group_name_resources** - The name of the resource group where the resources created with this template will be depoyed to.
+- **resource_group_name_resources** - The name of the resource group where the resources created with this template will be deployed to.
 - **resource_group_name_dns** - This name of the resource group where the pre-existing Private DNS Zones have been deployed to.
 - **subnet_id_agent** - The Azure resource ID of the subnet that will be delegated to the Agent service. This subnet must be delegated to Microsoft.App/environments prior to deployment of the resources.
 - **subnet_id_private_endpoint** - This Azure resource id of the subnet where Private Endpoints created by this template will be deployed.
@@ -112,7 +112,7 @@ The variables listed below [must be provided](https://developer.hashicorp.com/te
 az login
 ```
 
-3. Ensure the proper environmental variables are set for [AzApi](https://registry.terraform.io/providers/Azure/azapi/latest/docs) and [AzureRm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) providers. At a minimum, you must set the ARM_SUBSCRIPTION_ID environment variable to the subscription the Foundry resoruces will be deployed to. You can do this with the commands below:
+3. Ensure the proper environmental variables are set for [AzApi](https://registry.terraform.io/providers/Azure/azapi/latest/docs) and [AzureRm](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) providers. At a minimum, you must set the ARM_SUBSCRIPTION_ID environment variable to the subscription the Foundry resources will be deployed to. You can do this with the commands below:
 
 Linux/MacOS
 ```bash
