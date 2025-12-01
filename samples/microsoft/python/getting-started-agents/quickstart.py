@@ -97,12 +97,12 @@ print("Deleted agent")
 
 # <create_filesearch_agent>
 # Upload file and create vector store
-file = project.agents.files.upload(file_path="product_info_1.md", purpose="agents")
-vector_store = project.agents.vector_stores.create_and_poll(file_ids=[file.id], name="my_vectorstore")
+file = project_client.agents.files.upload(file_path="product_info_1.md", purpose="agents")
+vector_store = project_client.agents.vector_stores.create_and_poll(file_ids=[file.id], name="my_vectorstore")
 
 # Create file search tool and agent
 file_search = FileSearchTool(vector_store_ids=[vector_store.id])
-agent = project.agents.create_agent(
+agent = project_client.agents.create_agent(
     model="gpt-4o",
     name="my-assistant",
     instructions="You are a helpful assistant and can search information from uploaded files",
@@ -111,28 +111,28 @@ agent = project.agents.create_agent(
 )
 
 # Create thread and process user message
-thread = project.agents.threads.create()
-project.agents.messages.create(thread_id=thread.id, role="user", content="Hello, what Contoso products do you know?")
-run = project.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+thread = project_client.agents.threads.create()
+project_client.agents.messages.create(thread_id=thread.id, role="user", content="Hello, what Contoso products do you know?")
+run = project_client.agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
 
 # Handle run status
 if run.status == "failed":
     print(f"Run failed: {run.last_error}")
 
 # Cleanup resources
-project.agents.vector_stores.delete(vector_store.id)
-project.agents.files.delete(file_id=file.id)
-project.agents.delete_agent(agent.id)
+project_client.agents.vector_stores.delete(vector_store.id)
+project_client.agents.files.delete(file_id=file.id)
+project_client.agents.delete_agent(agent.id)
 
 # Print thread messages
-for message in project.agents.messages.list(thread_id=thread.id).text_messages:
+for message in project_client.agents.messages.list(thread_id=thread.id).text_messages:
     print(message)
 # </create_filesearch_agent>
 
 # <evaluate_agent_run>
 from azure.ai.projects import EvaluatorIds
 
-result = project.evaluation.create_agent_evaluation(
+result = project_client.evaluation.create_agent_evaluation(
     thread=thread.id,
     run=run.id, 
     evaluators=[EvaluatorIds.AGENT_QUALITY_EVALUATOR])
